@@ -152,9 +152,9 @@ void msort(int* array, int n)
 	}
 }
 
-int main(int argc, char* argv[])
-{
-	int array[] = { 3,7,9,1,0,3,8,2,6,5 };
-	msort(array, 10);
-	return 0;
-}
+//int main(int argc, char* argv[])
+//{
+//	int array[] = { 3,7,9,1,0,3,8,2,6,5 };
+//	msort(array, 10);
+//	return 0;
+//}
