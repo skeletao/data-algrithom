@@ -1,8 +1,31 @@
 #include <iostream>
-#include "rbTree.h"
+#include "stl.cpp"
 
 using namespace std;
 
+int main(int argc, char* argv[])
+{
+	int array[] = { 8, 9, 3 };
+	char string[] = "string";
+
+	stack* stack = stack_init(array);
+	stack_push(array + 1, stack);
+	int a1 = *(int *)stack_pop(stack);
+	int a2 = *(int *)stack_peek(stack);
+	a2 = *(int *)stack_pop(stack);
+	stack_destory(stack);
+
+	stack = stack_init(string);
+	stack_push(string + 1, stack);
+	char s1 = *(char *)stack_pop(stack);
+	char s2 = *(char *)stack_peek(stack);
+	s2 = *(char *)stack_pop(stack);
+	stack_destory(stack);
+
+	return 0;
+}
+
+/*
 int main(int agrc, char* argv[])
 {
 	int array[] = {8, 11, 17, 15, 6, 1, 22, 25, 27};
@@ -16,7 +39,6 @@ int main(int agrc, char* argv[])
 		rbInsert(rootTree, array[i]);
 		i++;
 	}
-	
 	root = rootTree->node;
 	preOrder(root);
 	cout << "----pre" << endl;
@@ -43,3 +65,4 @@ int main(int agrc, char* argv[])
 	
 	return 0;
 }
+*/

@@ -141,11 +141,13 @@
   <ItemGroup>
     <ClCompile Include="..\sort.cpp" />
     <ClCompile Include="..\Source.cpp" />
+    <ClCompile Include="..\stl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\AVLTree.h" />
     <ClInclude Include="..\BSTree.h" />
     <ClInclude Include="..\rbTree.h" />
+    <ClInclude Include="..\stl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
