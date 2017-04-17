@@ -26,10 +26,10 @@
     <ClInclude Include="..\AVLTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\bTree.h">
+    <ClInclude Include="..\rbTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\rbTree.h">
+    <ClInclude Include="..\BSTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

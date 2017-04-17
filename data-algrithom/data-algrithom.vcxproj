@@ -144,7 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\AVLTree.h" />
-    <ClInclude Include="..\bTree.h" />
+    <ClInclude Include="..\BSTree.h" />
     <ClInclude Include="..\rbTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

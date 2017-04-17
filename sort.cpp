@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-void bsort(int *array, int n)
+static void bsort(int *array, int n)
 {
 	int k = n;
 	int i = 0, j = 0, temp = 0, index = 0;
@@ -23,7 +23,7 @@ void bsort(int *array, int n)
 }
 
 
-void isort1(int *array, int n)
+static void isort1(int *array, int n)
 {
 	int i = 0, j = 0, k = 0, temp = 0;
 	for (i = 1; i < n; i++)
@@ -48,7 +48,7 @@ void isort1(int *array, int n)
 	}
 }
 
-void isort2(int *array, int n)
+static void isort2(int *array, int n)
 {
 	int i = 0, j = 0, k = 0, temp = 0;
 	for (i = 1; i < n; i++)
@@ -63,7 +63,7 @@ void isort2(int *array, int n)
 }
 
 
-void isort3(int *array, int n)
+static void isort3(int *array, int n)
 {
 	int i = 0, j = 0, k = 0, temp = 0;
 	for (i = 1; i < n; i++)
@@ -77,7 +77,7 @@ void isort3(int *array, int n)
 	}
 }
 
-void qsort(int *array, int l, int r)
+static void qsort(int *array, int l, int r)
 {
 	if (l < r)
 	{
@@ -108,7 +108,7 @@ void qsort(int *array, int l, int r)
 	}
 }
 
-void msort(int* array, int n)
+static void msort(int* array, int n)
 {
 	int i = 0, mid = n / 2, j = mid;
 	int* temp = (int *)malloc(sizeof(int)*n);
@@ -152,9 +152,39 @@ void msort(int* array, int n)
 	}
 }
 
-//int main(int argc, char* argv[])
-//{
-//	int array[] = { 3,7,9,1,0,3,8,2,6,5 };
-//	msort(array, 10);
-//	return 0;
-//}
+static void heapModify(int* array, int index, int size)
+{
+	int temp = array[index], j = 2 * index + 1;
+	while (j < size)
+	{
+		if (j + 1 < size && array[j] > array[j + 1])
+		{
+			j++;
+		}
+		if (temp <= array[j])
+		{
+			break;
+		}
+		array[index] = array[j];
+		j = 2 * index + 1;
+		index = j;
+	}
+	array[index] = temp;
+}
+
+static void hsort(int* array, int size)
+{
+	int i = 0, j = 0, temp = 0;
+	for (i = size / 2 - 1; i > -1; i--)
+	{
+		heapModify(array, i, size);
+	}
+	while (size > 1)
+	{
+		temp = array[size - 1];
+		array[size - 1] = array[0];
+		array[0] = temp;
+		size--;
+		heapModify(array, 0, size);
+	}
+}
