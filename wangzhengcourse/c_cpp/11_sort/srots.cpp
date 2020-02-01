@@ -27,8 +27,6 @@ void bubble_sort(int a[], int n)
 
 void insert_sort(int a[], int n)
 {
-    if (n < 2) return;
-
     for (int i = 1; i < n; i++)
     {
         int tmp = a[i];
@@ -42,12 +40,35 @@ void insert_sort(int a[], int n)
     }
 }
 
+void select_sort(int a[], int n)
+{
+    int i, j;
+    if (n < 2) return;
+
+    for (i = 0; i < n; i++)
+    {
+        int index = i;
+        for (j = i+1; j < n; j++)
+        {
+            if (a[index] > a[j])
+            {
+                index = j;
+            }
+        }
+        if (index != i) 
+        {
+            int tmp = a[i];
+            a[i] = a[index];
+            a[index] = tmp;
+        }
+    }
+}
 
 int main(void)
 {
-    int arr[] = {3, 6, 2, 7, 2, 9};
+    int arr[] = {3, 1, 3, 8, 4, 7, 1, 10, 2, 6};
     int n = sizeof(arr)/sizeof(arr[0]);
-    insert_sort(arr, n);
+    select_sort(arr, n);
     for (int i = 0; i < n; i++) printf("%d ", arr[i]);
     printf("\r\n");
 }
