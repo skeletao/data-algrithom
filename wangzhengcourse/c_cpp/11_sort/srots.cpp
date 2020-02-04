@@ -71,4 +71,5 @@ int main(void)
     select_sort(arr, n);
     for (int i = 0; i < n; i++) printf("%d ", arr[i]);
     printf("\r\n");
+    return 0;
 }
