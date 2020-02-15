@@ -4,3 +4,6 @@
 #objective files
 *.exe
 
+#tmp files
+**/tmp/
+
