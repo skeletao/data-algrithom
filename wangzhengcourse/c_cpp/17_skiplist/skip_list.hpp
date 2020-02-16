@@ -4,7 +4,7 @@
 #include <vector>
 #include <random>
 
-template <typename T>
+template<typename T>
 class Skip_list
 {
 private:
@@ -15,8 +15,8 @@ private:
         Node(int k, int level);
     };
     Node *head;
-    int MAX_LEVEL;
-    int maxlevel;
+    int MAX_LEVEL; // max level number for the list which start from 0 
+    int level; // current list level number which start from 0
     float probability;
     int random_levle();
     Node* make_node(int key, T &value, int level);
@@ -24,9 +24,9 @@ public:
     Skip_list();
     Skip_list(int level, float p);
     ~Skip_list();
-    void insert(int key, T &value);
+    void insert(int key, T value);
     void erase(int key);
-    T find(int key);
+    Node *find(int key);
     void display();
 };
 
