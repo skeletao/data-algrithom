@@ -170,21 +170,106 @@ void level_order(node *root)
 }
 
 
+/*
+    1. first: max of left tree
+    2. second: last right parent
+    3. last: null
+ */
+
+node *pre_node(node *root, int val)
+{
+    node *p, *lp, *rp, *child;
+    p = root;
+    lp = nullptr;
+    rp = nullptr;
+
+    while (p)
+    {
+        if (val < p->data) 
+        {
+            rp = p;
+            p = p->left;
+        } 
+        else if (val > p->data)
+        {
+            lp = p;
+            p = p->right;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    if (p == nullptr) return nullptr;
+
+    child = p->left;
+    while (child && child->right) child = child->right;
+
+    return (child != nullptr)? child : lp;
+}
+
+
+/*
+    1. first: min of right tree
+    2. second: last left parent
+    3. last: null
+ */
+node *post_node(node *root, int val)
+{
+    node *p, *lp, *rp, *child;
+    p = root;
+    lp = nullptr;
+    rp = nullptr;
+    
+    while (p)
+    {
+        if (val < p->data)
+        {
+            rp = p;
+            p = p->left;
+        }
+        else if (val > p->data)
+        {
+            lp = p;
+            p = p->right;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    if (p == nullptr) return nullptr;
+    
+    child = p->right;
+    while (child && child->left) child = child->left;
+
+    return (child != nullptr)? child : rp;
+}
+
 #endif
 
 
 
 int main(void)
 {
-    node *root = nullptr;
-
     int a[] = {33, 16, 50, 13, 18, 34, 58, 15, 17, 25, 51, 66, 19, 27, 55};
     int n = sizeof(a)/sizeof(a[0]);
+    int key = 51;
+
+    node *root = nullptr;
+
     for (int i = 0; i < n; i++)
     {
         insert(&root, a[i]);
     }
     level_order(root);
+
+
+    std::cout << key  << " pre: " << pre_node(root, key)->data << " post: " << post_node(root, key)->data << std::endl;
+    key = 15;
+    std::cout << key  << " pre: " << pre_node(root, key)->data << " post: " << post_node(root, key)->data << std::endl;
 
     delete2(&root, 13);
     level_order(root);
