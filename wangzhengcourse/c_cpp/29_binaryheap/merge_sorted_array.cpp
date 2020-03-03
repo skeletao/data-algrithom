@@ -25,6 +25,7 @@ public:
     void Heapify(int);
     void BuildHeap();
     node *GetTop();
+    void Remove_Top();
     void Display();
 };
 
@@ -71,6 +72,13 @@ MaxMinHeap::node *MaxMinHeap::GetTop()
     return array;
 }
 
+void MaxMinHeap::Remove_Top()
+{
+    Swap(0, size-1);
+    size -= 1;
+    Heapify(0);
+}
+
 void MaxMinHeap::Display()
 {
     for (int i = 0; i < size; i++)
@@ -81,7 +89,7 @@ void MaxMinHeap::Display()
 }
 
 
-int *MergeSortedArray(int **arr, int m, int n, bool is_max)
+int *MergeSortedArray(int *arr, int m, int n, bool is_max)
 {
     int *res = new int[m*n];
 
@@ -89,7 +97,7 @@ int *MergeSortedArray(int **arr, int m, int n, bool is_max)
 
     for (int i = 0; i < m; i ++)
     {
-        root[i].value = *((int *)arr+i*n*sizeof(int));
+        root[i].value = *(arr+i*n);
         root[i].row = i;
         root[i].column = 0;
     }
@@ -101,17 +109,16 @@ int *MergeSortedArray(int **arr, int m, int n, bool is_max)
         res[i] = top->value;
         std::cout << res[i] << " ";
 
-        if (top->column < n)
+        if ((top->column+1) < n)
         {
-            top->value = *((int *)arr+(top->row*n + top->column)*sizeof(int));
             top->column += 1;
+            top->value = *(arr+top->row*n + top->column);
+            heap.Heapify(0);
         } 
         else
         {
-            top->value = is_max? INT32_MIN : INT32_MAX;
+            heap.Remove_Top();
         }
-
-        heap.Heapify(0);
     }
     std::cout << std::endl;
 }
@@ -123,7 +130,7 @@ int main(void)
     int m = sizeof(a)/sizeof(a[0]);
     int n = sizeof(a[0])/sizeof(a[0][0]);
 
-    MergeSortedArray((int **)a, m, n, false);
+    MergeSortedArray((int *)a, m, n, false);
 
     return 0;
 }
