@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <list>
+#include <vector>
+#include <queue>
+#include <stack>
 
 struct Edge
 {
@@ -23,6 +26,10 @@ public:
     ~Graph();
     void AddEdge(int s, int d, int w = 1);
     void RemoveEdge(int s, int d);
+    void Bfs(int s, int d);
+    void Dfs(int s, int d);
+    void Dfs2(int s, int d); // recursive method
+    bool RecurDfs(int s, int d, std::vector<int>& prev, std::vector<bool>& visited);
     void Display();
 };
 
@@ -40,12 +47,16 @@ Graph::~Graph()
 
 void Graph::AddEdge(int s, int d, int w)
 {
+    if (s > v || d > v || s==d) return;
+    
     adj[s].emplace_back(s, d, w);
     if (!directed) adj[d].emplace_back(d, s, w);
 }
 
 void Graph::RemoveEdge(int s, int d)
 {
+    if (s > v || d > v || s==d) return;
+
     for (auto it=adj[s].begin(); it != adj[s].end(); it++)
     {
         if ((*it).dest == d) 
@@ -65,6 +76,136 @@ void Graph::RemoveEdge(int s, int d)
             break;
         }
     }
+}
+
+
+void Graph::Bfs(int s, int d)
+{
+    if (s > v || d > v || s==d) return;
+
+    std::queue<int> queue;
+    std::vector<int> prev(v);
+    std::vector<bool> visited(v);
+
+    queue.push(s);
+    visited[s] = true;
+    int i = 0;
+
+    while(!queue.empty())
+    {
+        int s1 = queue.front();
+        int d1 = s1;
+        queue.pop();
+        for (auto it=adj[s1].begin(); it != adj[s1].end(); it++)
+        {
+            d1 = (*it).dest;
+            if (!visited[d1])
+            {
+                prev[d1] = s1;
+                if (d1 == d)
+                {
+                    break;
+                }
+                visited[d1] = true;
+                queue.push(d1);
+            }
+        }
+        if (d1 == d)
+        {
+            while (d1 != s)
+            {
+                std::cout << d1 << "<--";
+                d1 = prev[d1];
+            }
+            std::cout << s << std::endl;
+            return;  
+        }
+    }
+}
+
+void Graph::Dfs(int s, int d)
+{
+    if (s>v || d>v || s==d) return;
+
+    std::stack<int> stack;
+    std::vector<bool> visited(v);
+    std::vector<int> prev(v);
+
+    stack.push(s);
+    visited[s] = true;
+
+    while (!stack.empty())
+    {
+        int s1 = stack.top();
+        int d1 = s1;
+        stack.pop();
+        
+        for (auto it = adj[s1].begin(); it != adj[s1].end(); it++)
+        {
+            d1 = (*it).dest;
+
+            if (!visited[d1])
+            {
+                prev[d1] = s1;
+                if (d1 == d)
+                {
+                    break;
+                }
+                visited[d1] = true;
+                stack.push(d1);
+            }
+        }
+        if (d1 == d)
+        {
+            while (d1 != s)
+            {
+                std::cout << d1 << "<--";
+                d1 = prev[d1];
+            }
+            std::cout << s << std::endl;
+            return;
+        }
+    }
+}
+
+void Graph::Dfs2(int s, int d)
+{
+    if (s>v || d>v || s==d) return;
+
+    std::vector<bool> visited(v);
+    std::vector<int> prev(v);
+    visited[s] = true;
+    bool res = RecurDfs(s, d, prev, visited);
+
+    if (res)
+    {
+        int tmp = d;
+        while (tmp != s)
+        {
+            std::cout << tmp << "<--";
+            tmp = prev[tmp];
+        }
+        std::cout << s << std::endl;
+        return;
+    }
+}
+
+bool Graph::RecurDfs(int s, int d, std::vector<int>& prev, std::vector<bool>& visited)
+{
+    bool res = false;
+    for (auto it = adj[s].begin(); it != adj[s].end(); it++)
+    {
+        int d1 = (*it).dest;
+        if (!visited[d1])
+        {
+            prev[d1] = s;
+            if (d1 == d) return true;
+            visited[d1] = true;
+            res = RecurDfs(d1, d, prev, visited);
+            if (res) return true;
+        }
+    }
+    return res;
 }
 
 
@@ -95,7 +236,7 @@ int main(void)
     g1.AddEdge(4, 5, 10);
     g1.Display();
 
-    Graph g2(14, false);
+    Graph g2(15, false);
     g2.AddEdge(0, 1, 20);
     g2.AddEdge(0, 4, 60);
     g2.AddEdge(0, 5, 60);
@@ -116,6 +257,25 @@ int main(void)
     g2.AddEdge(9, 10, 60);
     g2.AddEdge(10, 11, 60);
     g2.Display();
+
+
+    Graph g3 = Graph(9,false);
+    g3.AddEdge(0, 1, 20);
+    g3.AddEdge(0, 3, 20);
+    g3.AddEdge(1, 2, 60);
+    g3.AddEdge(1, 4, 60);
+    g3.AddEdge(2, 5, 60);
+    g3.AddEdge(3, 4, 20);
+    g3.AddEdge(4, 5, 10);
+    g3.AddEdge(4, 6, 10);
+    g3.AddEdge(5, 7, 10);
+    g3.AddEdge(6, 7, 10);
+    g3.Display();
+
+
+    g3.Bfs(0, 6);
+    g3.Dfs(0, 6);
+    g3.Dfs2(0, 6);
 
     return 0;
 }
