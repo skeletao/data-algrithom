@@ -6,14 +6,7 @@
 #include <vector>
 #include <queue>
 #include <stack>
-
-struct Edge
-{
-    int start;
-    int dest;
-    int weight;
-    Edge(int s, int d, int w): start(s), dest(d), weight(w){}  
-};
+#include "min_heap.hpp"
 
 class Graph
 {
@@ -30,6 +23,7 @@ public:
     void Dfs(int s, int d);
     void Dfs2(int s, int d); // recursive method
     bool RecurDfs(int s, int d, std::vector<int>& prev, std::vector<bool>& visited);
+    void Dijkstra(int s, int d);
     void Display();
 };
 
@@ -209,6 +203,53 @@ bool Graph::RecurDfs(int s, int d, std::vector<int>& prev, std::vector<bool>& vi
 }
 
 
+void Graph::Dijkstra(int s, int d)
+{
+    std::vector<bool> visited(v);
+    std::vector<int> prev(v);
+    std::vector<int> dis(v, INT_FAST32_MAX);
+    MinHeap heap = MinHeap(v);
+
+    dis[s] = 0;
+    visited[s] = true;
+    heap.Push(Vertex(s, 0));
+
+    while (!heap.IsEmpty())
+    {
+        Vertex cur = heap.Pop();
+        int i = cur.node;
+        for (auto it = adj[i].begin(); it != adj[i].end(); it++)
+        {
+            int j = (*it).dest;
+            int d = (*it).weight;
+            if (dis[j] > dis[i] + d)
+            {
+                dis[j] = dis[i] + d;
+                Vertex next = Vertex(j, dis[j]);
+                prev[j] = i;
+                if (visited[j])
+                {
+                    heap.Update(next);
+                }
+                else
+                {
+                    heap.Push(next);
+                    visited[j] = true;
+                }
+            }
+        }
+    }
+
+    int tmp = d;
+
+    while (tmp != s)
+    {
+        std::cout << tmp << "<--";
+        tmp = prev[tmp];
+    }
+    std::cout << s << ": " << dis[d] << std::endl;
+}
+
 void Graph::Display()
 {
     for (int i = 0; i < v; i++)
@@ -225,57 +266,70 @@ void Graph::Display()
 
 int main(void)
 {
-    Graph g1(6, true);
-    g1.AddEdge(0, 1, 10);
-    g1.AddEdge(0, 4, 15);
-    g1.AddEdge(1, 2, 15);
-    g1.AddEdge(1, 3, 2);
-    g1.AddEdge(2, 5, 5);
-    g1.AddEdge(3, 2, 1);
-    g1.AddEdge(3, 5, 12);
-    g1.AddEdge(4, 5, 10);
-    g1.Display();
+    // Graph g1(6, true);
+    // g1.AddEdge(0, 1, 10);
+    // g1.AddEdge(0, 4, 15);
+    // g1.AddEdge(1, 2, 15);
+    // g1.AddEdge(1, 3, 2);
+    // g1.AddEdge(2, 5, 5);
+    // g1.AddEdge(3, 2, 1);
+    // g1.AddEdge(3, 5, 12);
+    // g1.AddEdge(4, 5, 10);
+    // g1.Display();
 
-    Graph g2(15, false);
-    g2.AddEdge(0, 1, 20);
-    g2.AddEdge(0, 4, 60);
-    g2.AddEdge(0, 5, 60);
-    g2.AddEdge(0, 6, 60);
-    g2.AddEdge(1, 2, 20);
-    g2.AddEdge(2, 3, 10);
-    g2.AddEdge(3, 12, 40);
-    g2.AddEdge(3, 13, 30);
-    g2.AddEdge(4, 8, 50);
-    g2.AddEdge(4, 12, 40);
-    g2.AddEdge(5, 8, 70);
-    g2.AddEdge(5, 9, 80);
-    g2.AddEdge(5, 10, 50);
-    g2.AddEdge(6, 7, 70);
-    g2.AddEdge(6, 13, 50);
-    g2.AddEdge(7, 11, 50);
-    g2.AddEdge(8, 9, 50);
-    g2.AddEdge(9, 10, 60);
-    g2.AddEdge(10, 11, 60);
-    g2.Display();
-
-
-    Graph g3 = Graph(9,false);
-    g3.AddEdge(0, 1, 20);
-    g3.AddEdge(0, 3, 20);
-    g3.AddEdge(1, 2, 60);
-    g3.AddEdge(1, 4, 60);
-    g3.AddEdge(2, 5, 60);
-    g3.AddEdge(3, 4, 20);
-    g3.AddEdge(4, 5, 10);
-    g3.AddEdge(4, 6, 10);
-    g3.AddEdge(5, 7, 10);
-    g3.AddEdge(6, 7, 10);
-    g3.Display();
+    // Graph g2(15, false);
+    // g2.AddEdge(0, 1, 20);
+    // g2.AddEdge(0, 4, 60);
+    // g2.AddEdge(0, 5, 60);
+    // g2.AddEdge(0, 6, 60);
+    // g2.AddEdge(1, 2, 20);
+    // g2.AddEdge(2, 3, 10);
+    // g2.AddEdge(3, 12, 40);
+    // g2.AddEdge(3, 13, 30);
+    // g2.AddEdge(4, 8, 50);
+    // g2.AddEdge(4, 12, 40);
+    // g2.AddEdge(5, 8, 70);
+    // g2.AddEdge(5, 9, 80);
+    // g2.AddEdge(5, 10, 50);
+    // g2.AddEdge(6, 7, 70);
+    // g2.AddEdge(6, 13, 50);
+    // g2.AddEdge(7, 11, 50);
+    // g2.AddEdge(8, 9, 50);
+    // g2.AddEdge(9, 10, 60);
+    // g2.AddEdge(10, 11, 60);
+    // g2.Display();
 
 
-    g3.Bfs(0, 6);
-    g3.Dfs(0, 6);
-    g3.Dfs2(0, 6);
+    // Graph g3 = Graph(9,false);
+    // g3.AddEdge(0, 1, 20);
+    // g3.AddEdge(0, 3, 20);
+    // g3.AddEdge(1, 2, 60);
+    // g3.AddEdge(1, 4, 60);
+    // g3.AddEdge(2, 5, 60);
+    // g3.AddEdge(3, 4, 20);
+    // g3.AddEdge(4, 5, 10);
+    // g3.AddEdge(4, 6, 10);
+    // g3.AddEdge(5, 7, 10);
+    // g3.AddEdge(6, 7, 10);
+    // g3.Display();
+
+
+    // g3.Bfs(0, 6);
+    // g3.Dfs(0, 6);
+    // g3.Dfs2(0, 6);
+
+
+    Graph g4 = Graph(6, true);
+    g4.AddEdge(0, 1, 10);
+    g4.AddEdge(0, 4, 15);
+    g4.AddEdge(1, 2, 15);
+    g4.AddEdge(1, 3, 2);
+    g4.AddEdge(2, 5, 5);
+    g4.AddEdge(3, 2, 1);
+    g4.AddEdge(3, 5, 12);
+    g4.AddEdge(4, 5, 10);
+    g4.Display();
+    g4.Dijkstra(0, 5);
 
     return 0;
 }
