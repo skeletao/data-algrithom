@@ -14,16 +14,18 @@ private:
     int v;
     bool directed;
     std::list<Edge> *adj;
+    Vertex *vertexts;
 public:
     Graph(int n, bool dir = false);
     ~Graph();
     void AddEdge(int s, int d, int w = 1);
+    void AddVertex(int s, int x, int y);
     void RemoveEdge(int s, int d);
     void Bfs(int s, int d);
     void Dfs(int s, int d);
     void Dfs2(int s, int d); // recursive method
     bool RecurDfs(int s, int d, std::vector<int>& prev, std::vector<bool>& visited);
-    void Dijkstra(int s, int d);
+    void AStar(int s, int d);
     void Display();
 };
 
@@ -32,6 +34,7 @@ Graph::Graph(int n, bool dir)
     v = n;
     directed = dir;
     adj = new std::list<Edge>[v];
+    vertexts = new Vertex[v];
 }
 
 Graph::~Graph()
@@ -45,6 +48,11 @@ void Graph::AddEdge(int s, int d, int w)
     
     adj[s].emplace_back(s, d, w);
     if (!directed) adj[d].emplace_back(d, s, w);
+}
+
+void Graph::AddVertex(int s, int x, int y)
+{
+    vertexts[s] = Vertex(s, x, y);
 }
 
 void Graph::RemoveEdge(int s, int d)
@@ -203,41 +211,47 @@ bool Graph::RecurDfs(int s, int d, std::vector<int>& prev, std::vector<bool>& vi
 }
 
 
-void Graph::Dijkstra(int s, int d)
+void Graph::AStar(int s, int d)
 {
     std::vector<bool> visited(v);
     std::vector<int> prev(v);
-    std::vector<int> dis(v, INT_FAST32_MAX);
     MinHeap heap = MinHeap(v);
 
-    dis[s] = 0;
     visited[s] = true;
-    heap.Push(Vertex(s, 0));
+    vertexts[s].dis_s = 0;
+    heap.Push(vertexts[s]);
 
     while (!heap.IsEmpty())
     {
         Vertex cur = heap.Pop();
         int i = cur.node;
-        if (i == d) break;
         
         for (auto it = adj[i].begin(); it != adj[i].end(); it++)
         {
             int j = (*it).dest;
-            int d = (*it).weight;
-            if (dis[j] > dis[i] + d)
+            int w = (*it).weight;
+
+            if (vertexts[j].dis_s > vertexts[i].dis_s + w)
             {
-                dis[j] = dis[i] + d;
-                Vertex next = Vertex(j, dis[j]);
+                vertexts[j].dis_s = vertexts[i].dis_s + w;
+                vertexts[j].dis_d = vertexts[j].dis_s + abs(vertexts[j].x - vertexts[d].y) + abs(vertexts[j].y - vertexts[d].y);
                 prev[j] = i;
+
                 if (visited[j])
                 {
-                    heap.Update(next);
+                    heap.Update(vertexts[j]);
                 }
                 else
                 {
-                    heap.Push(next);
+                    heap.Push(vertexts[j]);
                     visited[j] = true;
                 }
+            }
+
+            if (j == d)
+            {
+                heap.Clears();
+                break;
             }
         }
     }
@@ -249,7 +263,7 @@ void Graph::Dijkstra(int s, int d)
         std::cout << tmp << "<--";
         tmp = prev[tmp];
     }
-    std::cout << s << ": " << dis[d] << std::endl;
+    std::cout << s << ": " << vertexts[d].dis_d << std::endl;
 }
 
 void Graph::Display()
@@ -268,70 +282,37 @@ void Graph::Display()
 
 int main(void)
 {
-    // Graph g1(6, true);
-    // g1.AddEdge(0, 1, 10);
-    // g1.AddEdge(0, 4, 15);
-    // g1.AddEdge(1, 2, 15);
-    // g1.AddEdge(1, 3, 2);
-    // g1.AddEdge(2, 5, 5);
-    // g1.AddEdge(3, 2, 1);
-    // g1.AddEdge(3, 5, 12);
-    // g1.AddEdge(4, 5, 10);
-    // g1.Display();
+    Graph g2(14, false);
+    g2.AddEdge(0, 1, 20);
+    g2.AddEdge(0, 4, 60);
+    g2.AddEdge(0, 5, 60);
+    g2.AddEdge(0, 6, 60);
+    g2.AddEdge(1, 2, 20);
+    g2.AddEdge(2, 3, 10);
+    g2.AddEdge(3, 12, 40);
+    g2.AddEdge(3, 13, 30);
+    g2.AddEdge(4, 8, 50);
+    g2.AddEdge(4, 12, 40);
+    g2.AddEdge(5, 8, 70);
+    g2.AddEdge(5, 9, 80);
+    g2.AddEdge(5, 10, 50);
+    g2.AddEdge(6, 7, 70);
+    g2.AddEdge(6, 13, 50);
+    g2.AddEdge(7, 11, 50);
+    g2.AddEdge(8, 9, 50);
+    g2.AddEdge(9, 10, 60);
+    g2.AddEdge(10, 11, 60);
+    g2.Display();
 
-    // Graph g2(15, false);
-    // g2.AddEdge(0, 1, 20);
-    // g2.AddEdge(0, 4, 60);
-    // g2.AddEdge(0, 5, 60);
-    // g2.AddEdge(0, 6, 60);
-    // g2.AddEdge(1, 2, 20);
-    // g2.AddEdge(2, 3, 10);
-    // g2.AddEdge(3, 12, 40);
-    // g2.AddEdge(3, 13, 30);
-    // g2.AddEdge(4, 8, 50);
-    // g2.AddEdge(4, 12, 40);
-    // g2.AddEdge(5, 8, 70);
-    // g2.AddEdge(5, 9, 80);
-    // g2.AddEdge(5, 10, 50);
-    // g2.AddEdge(6, 7, 70);
-    // g2.AddEdge(6, 13, 50);
-    // g2.AddEdge(7, 11, 50);
-    // g2.AddEdge(8, 9, 50);
-    // g2.AddEdge(9, 10, 60);
-    // g2.AddEdge(10, 11, 60);
-    // g2.Display();
+    int xs[] = {320, 300, 280, 270, 320, 360, 320, 370, 350, 390, 400, 400, 260, 270};
+    int ys[] = {630, 630, 625, 630, 700, 620, 590, 580, 730, 690, 620, 580, 700, 600};
 
+    for (int i = 0; i < sizeof(xs)/sizeof(int); i++)
+    {
+        g2.AddVertex(i, xs[i], ys[i]);
+    }
 
-    // Graph g3 = Graph(9,false);
-    // g3.AddEdge(0, 1, 20);
-    // g3.AddEdge(0, 3, 20);
-    // g3.AddEdge(1, 2, 60);
-    // g3.AddEdge(1, 4, 60);
-    // g3.AddEdge(2, 5, 60);
-    // g3.AddEdge(3, 4, 20);
-    // g3.AddEdge(4, 5, 10);
-    // g3.AddEdge(4, 6, 10);
-    // g3.AddEdge(5, 7, 10);
-    // g3.AddEdge(6, 7, 10);
-    // g3.Display();
-
-
-    // g3.Bfs(0, 6);
-    // g3.Dfs(0, 6);
-    // g3.Dfs2(0, 6);
-
-
-    Graph g4 = Graph(6, true);
-    g4.AddEdge(0, 1, 10);
-    g4.AddEdge(0, 4, 15);
-    g4.AddEdge(1, 2, 15);
-    g4.AddEdge(1, 3, 2);
-    g4.AddEdge(2, 5, 5);
-    g4.AddEdge(3, 2, 1);
-    g4.AddEdge(3, 5, 12);
-    g4.AddEdge(4, 5, 10);
-    g4.Display();
-    g4.Dijkstra(0, 5);
+    g2.AStar(0, 11);
 
     return 0;
 }
