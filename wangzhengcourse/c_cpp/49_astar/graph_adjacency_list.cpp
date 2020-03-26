@@ -8,6 +8,14 @@
 #include <stack>
 #include "min_heap.hpp"
 
+struct Edge
+{
+    int start;
+    int dest;
+    int weight;
+    Edge(int s, int d, int w): start(s), dest(d), weight(w){}  
+};
+
 class Graph
 {
 private:
