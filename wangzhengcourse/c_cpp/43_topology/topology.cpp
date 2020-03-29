@@ -133,7 +133,6 @@ void Graph::Dfs(int s, std::vector<std::list<int>> &inverse_adj, std::vector<boo
     }
 }
 
-
 int main(void)
 {
     Graph g2(14);
